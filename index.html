@@ -475,11 +475,11 @@
     // Touch controls for mobile
     document.querySelectorAll('.arrow-btn[data-direction]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const direction = e.target.dataset.direction;
-        if (direction === 'up' && direction.y === 0) nextDirection = {x: 0, y: -1};
-        else if (direction === 'down' && direction.y === 0) nextDirection = {x: 0, y: 1};
-        else if (direction === 'left' && direction.x === 0) nextDirection = {x: -1, y: 0};
-        else if (direction === 'right' && direction.x === 0) nextDirection = {x: 1, y: 0};
+        const dir = e.target.dataset.direction;
+        if (dir === 'up' && direction.y === 0) nextDirection = {x: 0, y: -1};
+        else if (dir === 'down' && direction.y === 0) nextDirection = {x: 0, y: 1};
+        else if (dir === 'left' && direction.x === 0) nextDirection = {x: -1, y: 0};
+        else if (dir === 'right' && direction.x === 0) nextDirection = {x: 1, y: 0};
       });
     });
 
