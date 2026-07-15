@@ -17,25 +17,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Arial', sans-serif;
-      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 12px;
+      margin: 0;
     }
 
     .container {
       text-align: center;
+      width: 100%;
+      max-width: 900px;
     }
 
     h1 {
       color: #fff;
       margin-bottom: 20px;
-      font-size: 2.5em;
+      font-size: clamp(1.5em, 8vw, 2.5em);
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .game-wrapper {
       display: flex;
-      gap: 30px;
-      align-items: flex-start;
+      gap: clamp(15px, 4vw, 30px);
+      align-items: stretch;
       justify-content: center;
       flex-wrap: wrap;
     }
@@ -47,6 +50,10 @@
       box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
       display: block;
       cursor: none;
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      aspect-ratio: 1;
     }
 
     .info-panel {
@@ -54,14 +61,19 @@
       backdrop-filter: blur(10px);
       border: 2px solid #00ff88;
       border-radius: 10px;
-      padding: 20px;
+      padding: clamp(16px, 4vw, 24px);
       color: #fff;
-      min-width: 200px;
+      flex: 1;
+      min-width: 250px;
+      max-width: 400px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
 
     .score-display {
-      font-size: 1.5em;
+      font-size: clamp(1.2em, 5vw, 1.5em);
       margin-bottom: 15px;
     }
 
@@ -71,21 +83,27 @@
     }
 
     .score-value {
-      font-size: 2em;
+      font-size: clamp(1.5em, 6vw, 2em);
       color: #00ff88;
       margin-top: 5px;
     }
 
     .controls {
       margin-top: 20px;
-      font-size: 0.9em;
+      font-size: clamp(0.8em, 3vw, 0.9em);
       line-height: 1.6;
       opacity: 0.9;
+      text-align: left;
     }
 
     .controls h3 {
       color: #00ff88;
       margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .controls p {
+      margin: 8px 0;
     }
 
     .button-group {
@@ -96,8 +114,8 @@
     }
 
     button {
-      padding: 12px 24px;
-      font-size: 1em;
+      padding: clamp(10px, 3vw, 14px) clamp(16px, 4vw, 24px);
+      font-size: clamp(0.85em, 3vw, 1em);
       border: 2px solid #00ff88;
       background: #00ff88;
       color: #1e3c72;
@@ -105,6 +123,8 @@
       cursor: pointer;
       font-weight: bold;
       transition: all 0.3s ease;
+      touch-action: manipulation;
+      min-height: 44px;
     }
 
     button:hover {
@@ -116,24 +136,102 @@
       transform: scale(0.98);
     }
 
+    button:focus {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
     .game-over {
       color: #ff4444;
-      font-size: 1.2em;
+      font-size: clamp(1em, 4vw, 1.2em);
       margin-top: 10px;
     }
 
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 1.8em;
+    .touch-controls {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .touch-controls.active {
+      display: grid;
+    }
+
+    .arrow-btn {
+      aspect-ratio: 1;
+      padding: 0;
+      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow-btn.center {
+      grid-column: 2;
+      background: rgba(0, 255, 136, 0.2);
+      border-color: #00ff88;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 8px;
       }
 
       .game-wrapper {
         flex-direction: column;
-        gap: 20px;
+        align-items: center;
+      }
+
+      .info-panel {
+        width: 100%;
+        max-width: none;
       }
 
       canvas {
-        border-width: 2px;
+        max-width: 100%;
+      }
+
+      .controls {
+        text-align: center;
+      }
+
+      .touch-controls {
+        display: grid;
+      }
+
+      .button-group {
+        flex-direction: row;
+      }
+
+      button {
+        flex: 1;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+      .game-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      canvas {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      .info-panel {
+        width: 100%;
+        max-width: none;
+      }
+    }
+
+    @supports (padding: max(0px)) {
+      body {
+        padding: max(8px, env(safe-area-inset-bottom));
       }
     }
   </style>
@@ -162,6 +260,17 @@
             Eat the <span style="color: #ff6b6b;">●</span> to grow<br>
             Don't hit walls or yourself!
           </p>
+        </div>
+        <div class="touch-controls" id="touchControls">
+          <button class="arrow-btn" data-direction="up">▲</button>
+          <div class="arrow-btn center"></div>
+          <div></div>
+          <button class="arrow-btn" data-direction="left">◄</button>
+          <div class="arrow-btn center"></div>
+          <button class="arrow-btn" data-direction="right">►</button>
+          <div></div>
+          <button class="arrow-btn" data-direction="down">▼</button>
+          <div></div>
         </div>
         <div class="button-group">
           <button id="startBtn">Start Game</button>
