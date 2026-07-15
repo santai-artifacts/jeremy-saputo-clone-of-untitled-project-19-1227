@@ -472,6 +472,42 @@
     startBtn.addEventListener('click', startGame);
     resetBtn.addEventListener('click', resetGame);
 
+    // Touch controls for mobile
+    document.querySelectorAll('.arrow-btn[data-direction]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const direction = e.target.dataset.direction;
+        if (direction === 'up' && direction.y === 0) nextDirection = {x: 0, y: -1};
+        else if (direction === 'down' && direction.y === 0) nextDirection = {x: 0, y: 1};
+        else if (direction === 'left' && direction.x === 0) nextDirection = {x: -1, y: 0};
+        else if (direction === 'right' && direction.x === 0) nextDirection = {x: 1, y: 0};
+      });
+    });
+
+    // Responsive canvas sizing
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      const maxSize = Math.min(container.clientWidth, window.innerHeight - 120);
+      canvas.width = Math.max(200, Math.min(maxSize, 400));
+      canvas.height = canvas.width;
+      draw();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Show/hide touch controls based on device
+    function updateTouchControls() {
+      const touchControls = document.getElementById('touchControls');
+      const isMobile = window.innerWidth <= 480;
+      if (isMobile) {
+        touchControls.classList.add('active');
+      } else {
+        touchControls.classList.remove('active');
+      }
+    }
+    window.addEventListener('resize', updateTouchControls);
+    updateTouchControls();
+
     // Initial draw
     draw();
 
